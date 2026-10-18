@@ -5,6 +5,7 @@ y pesos de clase.
 """
 
 import re
+from pathlib import Path
 import numpy as np
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -21,12 +22,12 @@ def limpiar(texto):
     return re.sub(r"\s+", " ", texto).strip()
 
 
-def cargar_datos(max_features=10000):
+def cargar_datos(max_features=10000, data_dir=None):
     """Devuelve X, y de train/val/test, los pesos de clase y el LabelEncoder."""
-    train = pd.read_csv("data/train.csv")
-    val = pd.read_csv("data/val.csv")
-    test = pd.read_csv("data/test.csv")
-
+    data_dir = Path(data_dir) if data_dir else Path(__file__).resolve().parent.parent / "data"
+    train = pd.read_csv(data_dir / "train.csv")
+    val = pd.read_csv(data_dir / "val.csv")
+    test = pd.read_csv(data_dir / "test.csv")
 
     for d in (train, val, test):
         d["clean"] = d["text"].apply(limpiar)
@@ -47,4 +48,7 @@ def cargar_datos(max_features=10000):
     pesos = compute_class_weight("balanced", classes=np.unique(y_train), y=y_train)
     class_weight = dict(enumerate(pesos))
 
-    return X_train, X_val, X_test, y_train, y_val, y_test, class_weight, le
+    return (
+        X_train, X_val, X_test, y_train, y_val, y_test,
+        class_weight, le, tfidf,
+    )
