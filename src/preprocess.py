@@ -23,8 +23,12 @@ def limpiar(texto):
 
 
 def cargar_datos(max_features=10000, data_dir=None):
-    """Devuelve X, y de train/val/test, los pesos de clase y el LabelEncoder."""
-    data_dir = Path(data_dir) if data_dir else Path(__file__).resolve().parent.parent / "data"
+    """Devuelve los datos vectorizados, pesos de clase, LabelEncoder y TF-IDF."""
+    data_dir = (
+        Path(data_dir)
+        if data_dir
+        else Path(__file__).resolve().parent.parent / "data"
+    )
     train = pd.read_csv(data_dir / "train.csv")
     val = pd.read_csv(data_dir / "val.csv")
     test = pd.read_csv(data_dir / "test.csv")
@@ -33,7 +37,9 @@ def cargar_datos(max_features=10000, data_dir=None):
         d["clean"] = d["text"].apply(limpiar)
 
     # TF-IDF: se ajusta SOLO con train para no filtrar información de test
-    tfidf = TfidfVectorizer(ngram_range=(1, 2), max_features=max_features)
+    tfidf = TfidfVectorizer(
+        ngram_range=(1, 2), max_features=max_features, dtype=np.float32
+    )
     X_train = tfidf.fit_transform(train["clean"]).toarray()
     X_val = tfidf.transform(val["clean"]).toarray()
     X_test = tfidf.transform(test["clean"]).toarray()
