@@ -32,6 +32,7 @@ src/
   train.py         Entrenamiento y guardado del modelo
   evaluate.py      Métricas y figuras de evaluación
   predict.py       Demo para clasificar tweets nuevos
+  experiments.py   Comparación de configuraciones del MLP
 
 artifacts/
   best_model.keras
@@ -51,10 +52,11 @@ Git porque contiene modelos y resultados generados.
 - Python 3.10 o superior.
 - Dependencias de [`requirements.txt`](requirements.txt).
 
-Se recomienda ejecutar los comandos desde la raíz del proyecto:
+Se recomienda ejecutar los comandos desde la raíz del proyecto. En PowerShell,
+la carpeta actual puede cambiarse con:
 
 ```powershell
-cd "C:\Users\Juan Sebastian\Desktop\Twitter-Sentiment-Analysis-Dataset"
+cd "ruta\al\proyecto"
 ```
 
 ## 1. Instalar las dependencias
@@ -327,6 +329,26 @@ python src/train.py
 python src/evaluate.py
 ```
 
+Para ejecutar una comparación reproducible de tres configuraciones:
+
+```powershell
+python src/experiments.py
+```
+
+El script compara la configuración base con una alternativa con mayor dropout
+y otra red más profunda. Las configuraciones se comparan usando únicamente el
+conjunto de validación y se ordenan por `val_f1_macro`. El resultado se guarda
+en:
+
+```text
+artifacts/experiments.csv
+```
+
+Esta tabla sirve para documentar el ajuste de parámetros en el reporte. Después
+de seleccionar una configuración, se debe ajustar `src/train.py`, entrenar de
+nuevo y ejecutar `src/evaluate.py` una sola vez sobre test para reportar el
+resultado final.
+
 ## Estado actual
 
 Actualmente están implementados:
@@ -340,6 +362,4 @@ Actualmente están implementados:
 - Matriz de confusión.
 - Curvas de pérdida.
 - Demo ejecutable para tweets nuevos.
-
-La documentación formal del proyecto y las diapositivas no forman parte de este
-flujo de ejecución y deben prepararse por separado.
+![alt text](image.png)
