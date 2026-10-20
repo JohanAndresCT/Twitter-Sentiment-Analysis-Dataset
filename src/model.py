@@ -5,7 +5,7 @@ from tensorflow.keras import layers
 
 
 def construir_mlp(input_dim, num_classes=3, hidden_units=(128, 64),
-                  dropout=0.3, learning_rate=1e-3):
+                  dropout=0.5, learning_rate=1e-4):
     """Crea y compila un MLP reproducible para vectores TF-IDF."""
     model = keras.Sequential(name="twitter_sentiment_mlp")
     model.add(keras.Input(shape=(input_dim,)))
